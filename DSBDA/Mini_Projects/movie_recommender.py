@@ -64,13 +64,15 @@ class movie_recommender:
         input_movies = pd.DataFrame(user_input)
         input_id = self.movies_df[self.movies_df['title'].isin(input_movies['title'].tolist())]
         input_movies = pd.merge(input_id, input_movies)
-        input_movies = input_movies.drop('genres', 1).drop('year', 1)
+        input_movies = input_movies.drop('genres', axis=1).drop('year', axis=1)
 
         user_movies = movies_with_genres[movies_with_genres['movieId'].isin(input_movies['movieId'].tolist())]
         userMovies = user_movies.reset_index(drop=True)
-        user_genre_table = userMovies.drop('movieId', 1).drop('title', 1).drop('genres', 1).drop('year', 1)
+        user_genre_table = userMovies.drop('movieId', axis=1).drop('title', axis=1).drop('genres', axis=1).drop('year',
+                                                                                                                axis=1)
         genre_table = movies_with_genres.set_index(movies_with_genres['movieId'])
-        genre_table = genre_table.drop('movieId', 1).drop('title', 1).drop('genres', 1).drop('year', 1)
+        genre_table = genre_table.drop('movieId', axis=1).drop('title', axis=1).drop('genres', axis=1).drop('year',
+                                                                                                            axis=1)
         user_profile = user_genre_table.transpose().dot(input_movies['rating'])
         recommendation_table = ((genre_table * user_profile).sum(axis=1)) / (user_profile.sum())
         recommendation_table = recommendation_table.sort_values(ascending=False)
